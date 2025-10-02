@@ -1,6 +1,7 @@
 @import '~animate.css/animate.min.css';
 @import url('https://fonts.googleapis.com/css2?family=Rubik:wght@300;400;500;600;700;800&display=swap');
 @import './vars';
+@import './navigation';
 
 * {
   box-sizing: border-box;
@@ -17,7 +18,7 @@ button {
 
 body {
   margin: 0;
-  background: #F9F8FF;
+  background: #121212;
 }
 
 html,
@@ -33,7 +34,7 @@ body,
   overflow: hidden;
   box-shadow: $mid-box-shadow;
   position: relative;
-  background: white;
+  background: #121212;
 
   &__content {
     display: flex;

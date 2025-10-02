@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import cx from 'classnames';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
@@ -10,18 +10,29 @@ import {
 import { ReactComponent as Avatar } from '../../../assets/images/avatar.svg';
 import './_sidebar.scss';
 
-function renderSideBarOption(link, icon, text, { selected } = {}) {
-  return (
-    <div
-      className={cx('sidebar__option', { 'sidebar__option--selected': selected })}
-    >
-      <FontAwesomeIcon icon={icon} />
-      <p>{text}</p>
-    </div>
-  )
-}
+export default function SideBar({ onNavigate }) {
+  const [selectedPage, setSelectedPage] = useState('discover');
 
-export default function SideBar() {
+  const handleNavigation = (page) => {
+    setSelectedPage(page);
+    if (onNavigate) {
+      onNavigate(page);
+    }
+  };
+
+  function renderSideBarOption(link, icon, text, page) {
+    return (
+      <div
+        className={cx('sidebar__option', { 'sidebar__option--selected': selectedPage === page })}
+        onClick={() => handleNavigation(page)}
+        style={{ cursor: 'pointer' }}
+      >
+        <FontAwesomeIcon icon={icon} />
+        <p>{text}</p>
+      </div>
+    )
+  }
+
   return (
     <div className="sidebar">
       <div className="sidebar__profile">
@@ -29,11 +40,11 @@ export default function SideBar() {
         <p>Bob Smith</p>
       </div>
       <div className="sidebar__options">
-        {renderSideBarOption('/', faHeadphonesAlt, 'Discover', { selected: true })}
-        {renderSideBarOption('/search', faSearch, 'Search')}
-        {renderSideBarOption('/favourites', faHeart, 'Favourites')}
-        {renderSideBarOption('/playlists', faPlayCircle, 'Playlists')}
-        {renderSideBarOption('/charts', faStream, 'Charts')}
+        {renderSideBarOption('/', faHeadphonesAlt, 'Discover', 'discover')}
+        {renderSideBarOption('/search', faSearch, 'Search', 'search')}
+        {renderSideBarOption('/favourites', faHeart, 'Favourites', 'favourites')}
+        {renderSideBarOption('/playlists', faPlayCircle, 'Playlists', 'playlists')}
+        {renderSideBarOption('/charts', faStream, 'Charts', 'charts')}
       </div>
     </div>
   );
