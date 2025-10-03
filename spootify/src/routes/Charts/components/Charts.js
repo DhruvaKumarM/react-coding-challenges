@@ -19,9 +19,6 @@ export default class Charts extends Component {
     this.getAccessToken();
   }
 
-  // Real-world Bug: Missing componentWillUnmount
-  // Multiple async operations without cleanup tracking
-
   async getAccessToken() {
     try {
       const response = await fetch(config.api.authUrl, {
@@ -35,7 +32,6 @@ export default class Charts extends Component {
 
       const data = await response.json();
       this.setState({ accessToken: data.access_token }, () => {
-        // Bug: Called here AND in componentDidUpdate - duplicate call
         this.fetchTopCharts();
       });
     } catch (error) {
@@ -45,7 +41,7 @@ export default class Charts extends Component {
 
   async fetchTopCharts() {
     try {
-      // Get top global tracks
+      // BUG: Missing loading state management
       const response = await fetch(
         `${config.api.baseUrl}/search?q=top&type=track&limit=50`,
         {
@@ -73,7 +69,6 @@ export default class Charts extends Component {
         isLoading: false
       });
 
-      // Fetch other data
       this.fetchViralTracks();
       this.fetchTopAlbums();
     } catch (error) {

@@ -20,9 +20,6 @@ export default class Favourites extends Component {
     this.getAccessToken();
   }
 
-  // Real-world Bug: Missing cleanup in componentWillUnmount
-  // If user navigates away quickly, setState will be called on unmounted component
-
   async getAccessToken() {
     try {
       const response = await fetch(config.api.authUrl, {
@@ -45,7 +42,7 @@ export default class Favourites extends Component {
 
   async fetchFavouriteTracks() {
     try {
-      // Using search for top liked songs
+      // BUG: No loading state indicator before async fetch
       const response = await fetch(
         `${config.api.baseUrl}/search?q=genre:pop&type=track&limit=20`,
         {

@@ -21,9 +21,6 @@ export default class Discover extends Component {
     this.getAccessToken();
   }
 
-  // Bug 1: Missing componentWillUnmount - causes memory leak
-  // When user navigates away, setState is called on unmounted component
-
   async getAccessToken() {
     try {
       const response = await fetch(config.api.authUrl, {
@@ -37,17 +34,14 @@ export default class Discover extends Component {
 
       const data = await response.json();
 
-      // Bug 2: Race condition - setState before async operations complete
       this.setState({ accessToken: data.access_token });
 
-      // Bug 3: Sequential API calls (await) instead of parallel - slow performance
       await this.fetchNewReleases();
       await this.fetchTopArtists();
       await this.fetchCategories();
       await this.fetchPopularTracks();
     } catch (error) {
       console.error('Error getting access token:', error);
-      // Bug 4: No error state management - user sees nothing when API fails
     }
   }
 
@@ -60,9 +54,7 @@ export default class Discover extends Component {
       });
 
       const data = await response.json();
-
-      // Bug 5: No check if component is still mounted before setState
-      // Can cause "Can't perform a React state update on an unmounted component" warning
+      // BUG: No loading state before this fetch
       this.setState({ newReleases: data.albums.items });
     } catch (error) {
       console.error('Error fetching new releases:', error);
@@ -71,7 +63,7 @@ export default class Discover extends Component {
 
   async fetchTopArtists() {
     try {
-      // Using search API to get popular artists
+      // BUG: Loading indicator missing for top artists section
       const response = await fetch(`${config.api.baseUrl}/search?q=year:2024&type=artist&limit=20`, {
         headers: {
           'Authorization': `Bearer ${this.state.accessToken}`
@@ -87,7 +79,6 @@ export default class Discover extends Component {
 
   async fetchPopularTracks() {
     try {
-      // Using search to get popular tracks
       const response = await fetch(`${config.api.baseUrl}/search?q=year:2024&type=track&limit=20`, {
         headers: {
           'Authorization': `Bearer ${this.state.accessToken}`
@@ -96,7 +87,6 @@ export default class Discover extends Component {
 
       const data = await response.json();
 
-      // Map tracks to have images property for consistency
       const tracksWithImages = data.tracks.items.map(track => ({
         ...track,
         images: track.album?.images || []

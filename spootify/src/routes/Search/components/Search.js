@@ -44,21 +44,16 @@ export default class Search extends Component {
     }
   }
 
-  // Real-world Bug: Missing debounce - API called on every keystroke
-  // This causes excessive API calls and poor performance
   handleSearchInput = (e) => {
     const query = e.target.value;
     this.setState({ searchQuery: query });
 
-    // Real-world Bug: No validation - calls API even for empty/short strings
     this.performSearch(query);
   }
 
   async performSearch(query) {
     try {
-      // Real-world Bug: Loading state not set before async call
-      // User doesn't see loading indicator
-
+      // BUG: Should set isLoading to true before starting search
       const response = await fetch(
         `${config.api.baseUrl}/search?q=${query}&type=track,artist,album,playlist&limit=10`,
         {
@@ -70,8 +65,6 @@ export default class Search extends Component {
 
       const data = await response.json();
 
-      // Real-world Bug: No abort controller - previous requests aren't cancelled
-      // If user types fast, results can arrive out of order
       this.setState({
         searchResults: {
           tracks: data.tracks?.items || [],

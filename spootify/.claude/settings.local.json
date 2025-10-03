@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git checkout:*)",
+      "Bash(git add:*)",
+      "Bash(git commit -m \"$(cat <<''EOF''\nBranch 1: Loading State Bugs Pattern\n\nThis branch contains loading state management bugs scattered across different components:\n\nBUGS INCLUDED:\n- Artists page: Missing isLoading state before fetchTopArtists\n- Browse page: Setting isLoading to false without first setting true in fetchNewReleases\n- Browse page: No loading indicator in fetchFeaturedPlaylists\n- Shows page: User sees loading indefinitely in fetchShows\n- Shows page: Missing loading state in fetchTrendingShows\n- Recent page: isLoading not managed in fetchRecentlyPlayed and fetchTopTracks\n- Discover page: No loading state in fetchNewReleases and fetchTopArtists\n- Search page: Missing isLoading before performSearch\n- Favourites page: No loading indicator before fetchFavouriteTracks\n- Charts page: Missing loading state management in fetchTopCharts\n\nStudents must identify and fix all loading state management issues.\n\n🤖 Generated with [Claude Code](https://claude.com/claude-code)\n\nCo-Authored-By: Claude <noreply@anthropic.com>\nEOF\n)\")"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}
