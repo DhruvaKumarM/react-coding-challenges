@@ -1,0 +1,129 @@
+.browse {
+  padding: 40px;
+  color: white;
+
+  &__title {
+    font-size: 48px;
+    font-weight: bold;
+    margin-bottom: 40px;
+  }
+
+  &__loading {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 80vh;
+    font-size: 24px;
+    color: white;
+  }
+
+  &__section {
+    margin-bottom: 50px;
+  }
+
+  &__subtitle {
+    font-size: 28px;
+    font-weight: bold;
+    margin-bottom: 20px;
+  }
+
+  &__grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 20px;
+  }
+
+  &__categories-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 20px;
+  }
+}
+
+.browse-card {
+  background: #181818;
+  border-radius: 8px;
+  padding: 16px;
+  transition: all 0.3s ease;
+  cursor: pointer;
+
+  &:hover {
+    background: #282828;
+    transform: translateY(-5px);
+  }
+
+  &__image {
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+    border-radius: 4px;
+    margin-bottom: 12px;
+  }
+
+  &__info {
+    h3 {
+      font-size: 16px;
+      font-weight: bold;
+      margin-bottom: 8px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    p {
+      font-size: 13px;
+      color: #b3b3b3;
+      margin-bottom: 4px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+    }
+  }
+
+  &__date {
+    font-size: 12px;
+    color: #1db954;
+    font-weight: 600;
+  }
+
+  &__tracks {
+    font-size: 12px;
+    color: #b3b3b3;
+    margin-top: 8px;
+  }
+}
+
+.category-card {
+  background: linear-gradient(135deg, #1db954, #191414);
+  border-radius: 8px;
+  padding: 20px;
+  height: 200px;
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+  transition: all 0.3s ease;
+
+  &:hover {
+    transform: scale(1.05);
+  }
+
+  &__image {
+    position: absolute;
+    bottom: 10px;
+    right: -10px;
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+    transform: rotate(25deg);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+  }
+
+  h3 {
+    font-size: 24px;
+    font-weight: bold;
+    z-index: 1;
+    position: relative;
+  }
+}

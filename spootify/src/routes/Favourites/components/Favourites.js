@@ -92,6 +92,16 @@ export default class Favourites extends Component {
       this.setState({
         favouriteArtists: data.artists?.items || []
       });
+
+      // BUG: Unnecessary additional fetch
+      fetch(
+        `${config.api.baseUrl}/search?q=genre:rock&type=artist&limit=12`,
+        {
+          headers: {
+            'Authorization': `Bearer ${this.state.accessToken}`
+          }
+        }
+      );
     } catch (error) {
       console.error('Error fetching favourite artists:', error);
     }

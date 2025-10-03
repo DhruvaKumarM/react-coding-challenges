@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git commit -m \"$(cat <<''EOF''\nBranch 2: Duplicate API Call Bugs Pattern\n\nThis branch contains duplicate API call bugs with varied patterns across different components:\n\nBUGS INCLUDED:\n- Search page: Redundant second call in fetchTrendingSearches (after setState)\n- Artists page: Duplicate fetch after setState in fetchGenreArtists\n- Charts page: Two parallel requests in Promise.all in fetchViralTracks\n- Browse page: Second fetch before setState in fetchCategories\n- Favourites page: Fire-and-forget duplicate fetch in fetchFavouriteArtists\n- Recent page: Duplicate request in Promise.all in fetchTopTracks\n- Shows page: Two consecutive awaited calls in fetchEpisodes\n- Discover page: Simultaneous duplicate call (no await) in fetchPopularTracks\n\nEach bug has a different pattern (Promise.all, consecutive awaits, fire-and-forget, etc.)\nto prevent students from copying solutions between files.\n\n🤖 Generated with [Claude Code](https://claude.com/claude-code)\n\nCo-Authored-By: Claude <noreply@anthropic.com>\nEOF\n)\")"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

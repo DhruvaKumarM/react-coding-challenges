@@ -84,16 +84,27 @@ export default class Charts extends Component {
 
   async fetchViralTracks() {
     try {
-      const response = await fetch(
-        `${config.api.baseUrl}/search?q=viral&type=track&limit=20`,
-        {
-          headers: {
-            'Authorization': `Bearer ${this.state.accessToken}`
+      // BUG: Two parallel requests to same endpoint
+      const [response1, response2] = await Promise.all([
+        fetch(
+          `${config.api.baseUrl}/search?q=viral&type=track&limit=20`,
+          {
+            headers: {
+              'Authorization': `Bearer ${this.state.accessToken}`
+            }
           }
-        }
-      );
+        ),
+        fetch(
+          `${config.api.baseUrl}/search?q=viral&type=track&limit=20`,
+          {
+            headers: {
+              'Authorization': `Bearer ${this.state.accessToken}`
+            }
+          }
+        )
+      ]);
 
-      const data = await response.json();
+      const data = await response1.json();
 
       const viralWithImages = data.tracks.items.map(track => ({
         ...track,

@@ -5,6 +5,10 @@ import Playlist from './Playlist';
 import Favourites from './Favourites';
 import Playlists from './Playlists';
 import Charts from './Charts';
+import Artists from './Artists';
+import Browse from './Browse';
+import Recent from './Recent';
+import Shows from './Shows';
 
 export default function Routes({ currentPage = 'discover' }) {
   const [activePage, setActivePage] = useState(currentPage);
@@ -28,6 +32,10 @@ export default function Routes({ currentPage = 'discover' }) {
         {activePage === 'favourites' && <Favourites />}
         {activePage === 'playlists' && <Playlists navigateTo={navigateTo} />}
         {activePage === 'charts' && <Charts />}
+        {activePage === 'artists' && <Artists />}
+        {activePage === 'browse' && <Browse />}
+        {activePage === 'recent' && <Recent />}
+        {activePage === 'shows' && <Shows />}
         {activePage === 'playlist' && <Playlist playlistId={selectedPlaylistId} navigateTo={navigateTo} />}
       </div>
     </div>

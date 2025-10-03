@@ -6,6 +6,10 @@ import {
   faHeart,
   faPlayCircle,
   faSearch, faStream,
+  faUser,
+  faClock,
+  faPodcast,
+  faMusic
 } from '@fortawesome/free-solid-svg-icons';
 import { ReactComponent as Avatar } from '../../../assets/images/avatar.svg';
 import './_sidebar.scss';
@@ -45,6 +49,10 @@ export default function SideBar({ onNavigate }) {
         {renderSideBarOption('/favourites', faHeart, 'Favourites', 'favourites')}
         {renderSideBarOption('/playlists', faPlayCircle, 'Playlists', 'playlists')}
         {renderSideBarOption('/charts', faStream, 'Charts', 'charts')}
+        {renderSideBarOption('/artists', faUser, 'Artists', 'artists')}
+        {renderSideBarOption('/browse', faMusic, 'Browse', 'browse')}
+        {renderSideBarOption('/recent', faClock, 'Recent', 'recent')}
+        {renderSideBarOption('/shows', faPodcast, 'Shows', 'shows')}
       </div>
     </div>
   );

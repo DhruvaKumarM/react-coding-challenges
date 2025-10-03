@@ -89,6 +89,7 @@ export default class Search extends Component {
 
   async fetchTrendingSearches() {
     try {
+      // BUG: Duplicate API call - fetching same data twice
       const response = await fetch(
         `${config.api.baseUrl}/search?q=trending&type=track&limit=8`,
         {
@@ -108,6 +109,16 @@ export default class Search extends Component {
       })) || [];
 
       this.setState({ trendingSearches: trendsWithImages });
+
+      // BUG: Redundant second call to same endpoint
+      await fetch(
+        `${config.api.baseUrl}/search?q=trending&type=track&limit=8`,
+        {
+          headers: {
+            'Authorization': `Bearer ${this.state.accessToken}`
+          }
+        }
+      );
     } catch (error) {
       console.error('Error fetching trending:', error);
     }

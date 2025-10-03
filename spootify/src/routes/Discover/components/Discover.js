@@ -87,8 +87,14 @@ export default class Discover extends Component {
 
   async fetchPopularTracks() {
     try {
-      // Using search to get popular tracks
+      // BUG: Making duplicate requests simultaneously
       const response = await fetch(`${config.api.baseUrl}/search?q=year:2024&type=track&limit=20`, {
+        headers: {
+          'Authorization': `Bearer ${this.state.accessToken}`
+        }
+      });
+
+      fetch(`${config.api.baseUrl}/search?q=year:2024&type=track&limit=20`, {
         headers: {
           'Authorization': `Bearer ${this.state.accessToken}`
         }
@@ -96,7 +102,6 @@ export default class Discover extends Component {
 
       const data = await response.json();
 
-      // Map tracks to have images property for consistency
       const tracksWithImages = data.tracks.items.map(track => ({
         ...track,
         images: track.album?.images || []
