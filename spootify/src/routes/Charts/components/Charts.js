@@ -19,9 +19,6 @@ export default class Charts extends Component {
     this.getAccessToken();
   }
 
-  // Real-world Bug: Missing componentWillUnmount
-  // Multiple async operations without cleanup tracking
-
   async getAccessToken() {
     try {
       const response = await fetch(config.api.authUrl, {
@@ -35,7 +32,6 @@ export default class Charts extends Component {
 
       const data = await response.json();
       this.setState({ accessToken: data.access_token }, () => {
-        // Bug: Called here AND in componentDidUpdate - duplicate call
         this.fetchTopCharts();
       });
     } catch (error) {
@@ -84,7 +80,9 @@ export default class Charts extends Component {
 
   async fetchViralTracks() {
     try {
-      // BUG: Two parallel requests to same endpoint
+      // 🔍 HINT: `Promise.all` runs multiple requests at the same time.
+      // Look closely at what URLs are being fetched inside this array.
+      // Are they all unique? Is every request here doing something different?
       const [response1, response2] = await Promise.all([
         fetch(
           `${config.api.baseUrl}/search?q=viral&type=track&limit=20`,

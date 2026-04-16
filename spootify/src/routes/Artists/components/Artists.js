@@ -43,7 +43,6 @@ export default class Artists extends Component {
 
   async fetchTopArtists() {
     try {
-      // BUG: isLoading should be set to true before fetching
       const response = await fetch(
         `${config.api.baseUrl}/search?q=year:2024&type=artist&limit=20`,
         {
@@ -100,7 +99,9 @@ export default class Artists extends Component {
         genreArtists: data.artists?.items || []
       });
 
-      // BUG: Making duplicate fetch after setState
+      // 🔍 HINT: This function makes more than one network call.
+      // Is every call here actually necessary?
+      // Try logging to the console or checking the Network tab to investigate.
       const duplicateResponse = await fetch(
         `${config.api.baseUrl}/search?q=genre:rock&type=artist&limit=12`,
         {

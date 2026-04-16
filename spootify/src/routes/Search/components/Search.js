@@ -44,21 +44,14 @@ export default class Search extends Component {
     }
   }
 
-  // Real-world Bug: Missing debounce - API called on every keystroke
-  // This causes excessive API calls and poor performance
   handleSearchInput = (e) => {
     const query = e.target.value;
     this.setState({ searchQuery: query });
-
-    // Real-world Bug: No validation - calls API even for empty/short strings
     this.performSearch(query);
   }
 
   async performSearch(query) {
     try {
-      // Real-world Bug: Loading state not set before async call
-      // User doesn't see loading indicator
-
       const response = await fetch(
         `${config.api.baseUrl}/search?q=${query}&type=track,artist,album,playlist&limit=10`,
         {
@@ -70,8 +63,6 @@ export default class Search extends Component {
 
       const data = await response.json();
 
-      // Real-world Bug: No abort controller - previous requests aren't cancelled
-      // If user types fast, results can arrive out of order
       this.setState({
         searchResults: {
           tracks: data.tracks?.items || [],
@@ -89,7 +80,6 @@ export default class Search extends Component {
 
   async fetchTrendingSearches() {
     try {
-      // BUG: Duplicate API call - fetching same data twice
       const response = await fetch(
         `${config.api.baseUrl}/search?q=trending&type=track&limit=8`,
         {
@@ -110,7 +100,10 @@ export default class Search extends Component {
 
       this.setState({ trendingSearches: trendsWithImages });
 
-      // BUG: Redundant second call to same endpoint
+      // 🔍 HINT: Read this function top to bottom carefully.
+      // After the state has already been updated, does the code do
+      // anything else? Check if any extra work is being done that
+      // was already completed earlier in this same function.
       await fetch(
         `${config.api.baseUrl}/search?q=trending&type=track&limit=8`,
         {
