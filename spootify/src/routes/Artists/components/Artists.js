@@ -9,8 +9,7 @@ export default class Artists extends Component {
     this.state = {
       topArtists: [],
       popularArtists: [],
-      genreArtists: [],
-      accessToken: '',
+      rockArtists: [],
       isLoading: true
     };
   }
@@ -31,92 +30,67 @@ export default class Artists extends Component {
       });
 
       const data = await response.json();
-      this.setState({ accessToken: data.access_token }, () => {
-        this.fetchTopArtists();
-        this.fetchPopularArtists();
-        this.fetchGenreArtists();
-      });
+      const token = data.access_token;
+
+      // Fetch all artist sections using the token we just received
+      this.fetchTopArtists(token);
+      this.fetchPopularArtists(token);
+      this.fetchRockArtists(token);
     } catch (error) {
       console.error('Error getting access token:', error);
     }
   }
 
-  async fetchTopArtists() {
+  async fetchTopArtists(token) {
     try {
       const response = await fetch(
         `${config.api.baseUrl}/search?q=year:2024&type=artist&limit=20`,
-        {
-          headers: {
-            'Authorization': `Bearer ${this.state.accessToken}`
-          }
-        }
+        { headers: { 'Authorization': `Bearer ${token}` } }
       );
-
       const data = await response.json();
-      this.setState({
-        topArtists: data.artists?.items || [],
-        isLoading: false
-      });
+      this.setState({ topArtists: data.artists?.items || [], isLoading: false });
     } catch (error) {
       console.error('Error fetching top artists:', error);
       this.setState({ isLoading: false });
     }
   }
 
-  async fetchPopularArtists() {
+  async fetchPopularArtists(token) {
     try {
       const response = await fetch(
         `${config.api.baseUrl}/search?q=genre:pop&type=artist&limit=15`,
-        {
-          headers: {
-            'Authorization': `Bearer ${this.state.accessToken}`
-          }
-        }
+        { headers: { 'Authorization': `Bearer ${token}` } }
       );
-
       const data = await response.json();
-      this.setState({
-        popularArtists: data.artists?.items || []
-      });
+      this.setState({ popularArtists: data.artists?.items || [] });
     } catch (error) {
       console.error('Error fetching popular artists:', error);
     }
   }
 
-  async fetchGenreArtists() {
+  async fetchRockArtists(token) {
     try {
       const response = await fetch(
         `${config.api.baseUrl}/search?q=genre:rock&type=artist&limit=12`,
-        {
-          headers: {
-            'Authorization': `Bearer ${this.state.accessToken}`
-          }
-        }
+        { headers: { 'Authorization': `Bearer ${token}` } }
       );
-
       const data = await response.json();
-      this.setState({
-        genreArtists: data.artists?.items || []
-      });
+      this.setState({ rockArtists: data.artists?.items || [] });
 
-      // 🔍 HINT: This function makes more than one network call.
-      // Is every call here actually necessary?
-      // Try logging to the console or checking the Network tab to investigate.
-      const duplicateResponse = await fetch(
+      // 🔍 HINT: This function makes more than one network request.
+      // Is every request actually needed? Check the Network tab
+      // in DevTools (F12) to see what's being sent to the server.
+      const response2 = await fetch(
         `${config.api.baseUrl}/search?q=genre:rock&type=artist&limit=12`,
-        {
-          headers: {
-            'Authorization': `Bearer ${this.state.accessToken}`
-          }
-        }
+        { headers: { 'Authorization': `Bearer ${token}` } }
       );
     } catch (error) {
-      console.error('Error fetching genre artists:', error);
+      console.error('Error fetching rock artists:', error);
     }
   }
 
   render() {
-    const { topArtists, popularArtists, genreArtists, isLoading } = this.state;
+    const { topArtists, popularArtists, rockArtists, isLoading } = this.state;
 
     if (isLoading) {
       return <div className="artists__loading">Loading artists...</div>;
@@ -124,7 +98,7 @@ export default class Artists extends Component {
 
     return (
       <div className="artists">
-        <h1 className="artists__title">Top Artists</h1>
+        <h1 className="artists__title">Artists</h1>
 
         <section className="artists__section">
           <h2 className="artists__subtitle">Trending Now</h2>
@@ -138,21 +112,8 @@ export default class Artists extends Component {
                 />
                 <div className="artist-card__info">
                   <h3>{artist.name}</h3>
-                  <p className="artist-card__genres">
-                    {artist.genres?.slice(0, 2).join(', ') || 'Artist'}
-                  </p>
-                  <p className="artist-card__followers">
-                    {(artist.followers?.total || 0).toLocaleString()} followers
-                  </p>
-                  <div className="artist-card__popularity">
-                    <div className="popularity-bar">
-                      <div
-                        className="popularity-bar__fill"
-                        style={{ width: `${artist.popularity || 0}%` }}
-                      />
-                    </div>
-                    <span>{artist.popularity || 0}</span>
-                  </div>
+                  <p>{artist.genres?.slice(0, 2).join(', ') || 'Artist'}</p>
+                  <p>{(artist.followers?.total || 0).toLocaleString()} followers</p>
                 </div>
               </div>
             ))}
@@ -171,12 +132,8 @@ export default class Artists extends Component {
                 />
                 <div className="artist-card__info">
                   <h3>{artist.name}</h3>
-                  <p className="artist-card__genres">
-                    {artist.genres?.slice(0, 2).join(', ') || 'Artist'}
-                  </p>
-                  <p className="artist-card__followers">
-                    {(artist.followers?.total || 0).toLocaleString()} followers
-                  </p>
+                  <p>{artist.genres?.slice(0, 2).join(', ') || 'Artist'}</p>
+                  <p>{(artist.followers?.total || 0).toLocaleString()} followers</p>
                 </div>
               </div>
             ))}
@@ -186,7 +143,7 @@ export default class Artists extends Component {
         <section className="artists__section">
           <h2 className="artists__subtitle">Rock Artists</h2>
           <div className="artists__grid">
-            {genreArtists.map((artist) => (
+            {rockArtists.map((artist) => (
               <div key={artist.id} className="artist-card">
                 <img
                   src={artist.images?.[0]?.url || ''}
@@ -195,12 +152,8 @@ export default class Artists extends Component {
                 />
                 <div className="artist-card__info">
                   <h3>{artist.name}</h3>
-                  <p className="artist-card__genres">
-                    {artist.genres?.slice(0, 2).join(', ') || 'Artist'}
-                  </p>
-                  <p className="artist-card__followers">
-                    {(artist.followers?.total || 0).toLocaleString()} followers
-                  </p>
+                  <p>{artist.genres?.slice(0, 2).join(', ') || 'Artist'}</p>
+                  <p>{(artist.followers?.total || 0).toLocaleString()} followers</p>
                 </div>
               </div>
             ))}

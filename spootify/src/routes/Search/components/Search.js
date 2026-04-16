@@ -23,7 +23,6 @@ export default class Search extends Component {
 
   componentDidMount() {
     this.getAccessToken();
-    this.fetchTrendingSearches();
   }
 
   async getAccessToken() {
@@ -38,7 +37,10 @@ export default class Search extends Component {
       });
 
       const data = await response.json();
-      this.setState({ accessToken: data.access_token });
+      const token = data.access_token;
+
+      this.setState({ accessToken: token });
+      this.fetchTrendingSearches(token);
     } catch (error) {
       console.error('Error getting access token:', error);
     }
@@ -54,11 +56,7 @@ export default class Search extends Component {
     try {
       const response = await fetch(
         `${config.api.baseUrl}/search?q=${query}&type=track,artist,album,playlist&limit=10`,
-        {
-          headers: {
-            'Authorization': `Bearer ${this.state.accessToken}`
-          }
-        }
+        { headers: { 'Authorization': `Bearer ${this.state.accessToken}` } }
       );
 
       const data = await response.json();
@@ -78,39 +76,30 @@ export default class Search extends Component {
     }
   }
 
-  async fetchTrendingSearches() {
+  async fetchTrendingSearches(token) {
     try {
       const response = await fetch(
         `${config.api.baseUrl}/search?q=trending&type=track&limit=8`,
-        {
-          headers: {
-            'Authorization': `Bearer ${this.state.accessToken}`
-          }
-        }
+        { headers: { 'Authorization': `Bearer ${token}` } }
       );
 
       const data = await response.json();
 
-      const trendsWithImages = data.tracks?.items.map(track => ({
+      const trends = data.tracks?.items.map(track => ({
         id: track.id,
         name: track.name,
         artists: track.artists,
-        images: track.album?.images || []
+        image: track.album?.images?.[0]?.url || ''
       })) || [];
 
-      this.setState({ trendingSearches: trendsWithImages });
+      this.setState({ trendingSearches: trends });
 
-      // 🔍 HINT: Read this function top to bottom carefully.
-      // After the state has already been updated, does the code do
-      // anything else? Check if any extra work is being done that
-      // was already completed earlier in this same function.
+      // 🔍 HINT: Read this function from top to bottom.
+      // The trending data has already been fetched and saved to state above.
+      // Is there any unnecessary work still happening after that?
       await fetch(
         `${config.api.baseUrl}/search?q=trending&type=track&limit=8`,
-        {
-          headers: {
-            'Authorization': `Bearer ${this.state.accessToken}`
-          }
-        }
+        { headers: { 'Authorization': `Bearer ${token}` } }
       );
     } catch (error) {
       console.error('Error fetching trending:', error);
@@ -141,7 +130,7 @@ export default class Search extends Component {
             <div className="search__trending-grid">
               {trendingSearches.map((item) => (
                 <div key={item.id} className="trending-item">
-                  <img src={item.images[0]?.url} alt={item.name} />
+                  <img src={item.image} alt={item.name} />
                   <div className="trending-item__info">
                     <h4>{item.name}</h4>
                     <p>{item.artists.map(a => a.name).join(', ')}</p>

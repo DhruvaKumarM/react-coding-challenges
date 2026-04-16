@@ -33,7 +33,6 @@ export default class Discover extends Component {
       });
 
       const data = await response.json();
-
       this.setState({ accessToken: data.access_token });
 
       await this.fetchNewReleases();
@@ -48,13 +47,9 @@ export default class Discover extends Component {
   async fetchNewReleases() {
     try {
       const response = await fetch(`${config.api.baseUrl}/browse/new-releases?limit=20`, {
-        headers: {
-          'Authorization': `Bearer ${this.state.accessToken}`
-        }
+        headers: { 'Authorization': `Bearer ${this.state.accessToken}` }
       });
-
       const data = await response.json();
-
       this.setState({ newReleases: data.albums.items });
     } catch (error) {
       console.error('Error fetching new releases:', error);
@@ -63,13 +58,9 @@ export default class Discover extends Component {
 
   async fetchTopArtists() {
     try {
-      // Using search API to get popular artists
       const response = await fetch(`${config.api.baseUrl}/search?q=year:2024&type=artist&limit=20`, {
-        headers: {
-          'Authorization': `Bearer ${this.state.accessToken}`
-        }
+        headers: { 'Authorization': `Bearer ${this.state.accessToken}` }
       });
-
       const data = await response.json();
       this.setState({ topArtists: data.artists.items });
     } catch (error) {
@@ -77,48 +68,41 @@ export default class Discover extends Component {
     }
   }
 
-  async fetchPopularTracks() {
-    try {
-      // 🔍 HINT: Open the Network tab in your browser DevTools (F12) and
-      // navigate to this page. Count how many requests are made to the
-      // tracks endpoint. Does the number match what you'd expect?
-      const response = await fetch(`${config.api.baseUrl}/search?q=year:2024&type=track&limit=20`, {
-        headers: {
-          'Authorization': `Bearer ${this.state.accessToken}`
-        }
-      });
-
-      fetch(`${config.api.baseUrl}/search?q=year:2024&type=track&limit=20`, {
-        headers: {
-          'Authorization': `Bearer ${this.state.accessToken}`
-        }
-      });
-
-      const data = await response.json();
-
-      const tracksWithImages = data.tracks.items.map(track => ({
-        ...track,
-        images: track.album?.images || []
-      }));
-
-      this.setState({ popularTracks: tracksWithImages });
-    } catch (error) {
-      console.error('Error fetching popular tracks:', error);
-    }
-  }
-
   async fetchCategories() {
     try {
       const response = await fetch(`${config.api.baseUrl}/browse/categories?limit=20`, {
-        headers: {
-          'Authorization': `Bearer ${this.state.accessToken}`
-        }
+        headers: { 'Authorization': `Bearer ${this.state.accessToken}` }
       });
-
       const data = await response.json();
       this.setState({ categories: data.categories.items });
     } catch (error) {
       console.error('Error fetching categories:', error);
+    }
+  }
+
+  async fetchPopularTracks() {
+    try {
+      const response = await fetch(`${config.api.baseUrl}/search?q=year:2024&type=track&limit=20`, {
+        headers: { 'Authorization': `Bearer ${this.state.accessToken}` }
+      });
+
+      const data = await response.json();
+
+      const tracks = data.tracks.items.map(track => ({
+        ...track,
+        images: track.album?.images || []
+      }));
+
+      this.setState({ popularTracks: tracks });
+
+      // 🔍 HINT: Open the Network tab in DevTools (F12) and watch
+      // the requests when this page loads. Count how many times
+      // the tracks endpoint gets called. Does that number seem right?
+      fetch(`${config.api.baseUrl}/search?q=year:2024&type=track&limit=20`, {
+        headers: { 'Authorization': `Bearer ${this.state.accessToken}` }
+      });
+    } catch (error) {
+      console.error('Error fetching popular tracks:', error);
     }
   }
 
